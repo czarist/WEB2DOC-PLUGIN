@@ -1,0 +1,20 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Compiled output
+dist/
+
+# TypeScript build artifacts
+*.js
+*.js.map
+*.d.ts
+
+# Webpack cache
+.cache/
+webpack-stats.json
+
+# Editor and system files
+.vscode/
+.DS_Store
+Thumbs.db
