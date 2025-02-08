@@ -1,23 +1,18 @@
-console.log("[Popup] Script carregado!");
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("[Popup] DOM carregado!");
 
     const exportCSVButton = document.getElementById("exportCSV");
     const exportPDFButton = document.getElementById("exportPDF");
 
     if (!exportCSVButton || !exportPDFButton) {
-        console.error("[Popup] Botões não encontrados! Verifique o popup.html");
         return;
     }
 
     exportCSVButton.addEventListener("click", () => {
-        console.log("[Popup] Enviando mensagem para exportar CSV...");
         sendMessage("exportCSV");
     });
 
     exportPDFButton.addEventListener("click", () => {
-        console.log("[Popup] Enviando mensagem para exportar PDF...");
         sendMessage("exportPDF");
     });
 });
