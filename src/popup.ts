@@ -1,31 +1,31 @@
-console.log("[Popup] Script loaded!");
+console.log("[Popup] Script carregado!");
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("[Popup] DOM fully loaded!");
+    console.log("[Popup] DOM carregado!");
 
-    const exportExcelButton = document.getElementById("exportExcel");
+    const exportCSVButton = document.getElementById("exportCSV");
     const exportPDFButton = document.getElementById("exportPDF");
 
-    if (!exportExcelButton || !exportPDFButton) {
-        console.error("[Popup] Buttons not found! Check popup.html");
+    if (!exportCSVButton || !exportPDFButton) {
+        console.error("[Popup] Botões não encontrados! Verifique o popup.html");
         return;
     }
 
-    exportExcelButton.addEventListener("click", () => {
-        console.log("[Popup] Sending message to content script for Excel export...");
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0].id) {
-                chrome.tabs.sendMessage(tabs[0].id, { action: "exportExcel" });
-            }
-        });
+    exportCSVButton.addEventListener("click", () => {
+        console.log("[Popup] Enviando mensagem para exportar CSV...");
+        sendMessage("exportCSV");
     });
 
     exportPDFButton.addEventListener("click", () => {
-        console.log("[Popup] Sending message to content script for PDF export...");
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0].id) {
-                chrome.tabs.sendMessage(tabs[0].id, { action: "exportPDF" });
-            }
-        });
+        console.log("[Popup] Enviando mensagem para exportar PDF...");
+        sendMessage("exportPDF");
     });
 });
+
+function sendMessage(action: string): void {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+            chrome.tabs.sendMessage(tabs[0].id, { action });
+        }
+    });
+}
