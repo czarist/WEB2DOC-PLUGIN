@@ -11,9 +11,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v1.0.1"><img alt="Version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-111111?style=flat-square"></a>
+  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v1.0.2"><img alt="Version 1.0.2" src="https://img.shields.io/badge/version-1.0.2-111111?style=flat-square"></a>
   <img alt="Node.js 26 LTS" src="https://img.shields.io/badge/Node.js-26_LTS-339933?style=flat-square&logo=nodedotjs&logoColor=white">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Browser%20extension-Manifest%20V3-4285F4?style=flat-square">
   <img alt="Webpack" src="https://img.shields.io/badge/bundled%20with-Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green?style=flat-square"></a>
@@ -88,9 +88,23 @@ npm run build
 
 The CSV uses RFC 4180-style quoted fields, CRLF row endings, and a UTF-8 BOM to improve accented-text recognition in spreadsheet applications.
 
-Run `npm run check` for all checks. The committed lockfile makes installations reproducible. TypeScript stays on 6.x because `ts-loader` requires its compiler API; TypeScript 7 is not compatible with this build. Production bundles target ES2022 and omit inline source maps.
+Run `npm run check` for all checks. The committed lockfile makes installations reproducible. Type checking uses TypeScript 7 (`tsc`). Webpack compiles TypeScript with `esbuild-loader`, which strips types without the TypeScript compiler API that TypeScript 7 no longer provides; `isolatedModules` and `verbatimModuleSyntax` keep this per-file compilation safe. Production bundles target ES2022 and omit inline source maps.
 
 Run `npm run ci` locally to perform a clean install followed by all checks. GitHub Actions runs the same command on Linux, Windows, and macOS for pushes (including tags) and pull requests; it can also be started manually. Clean installation replaces `node_modules` with the locked dependencies.
+
+## Releasing
+
+Releases use [semantic versioning](https://semver.org/) and are identified by Git tags in the form `vMAJOR.MINOR.PATCH`. The version is recorded in `package.json`, `package-lock.json`, `src/manifest.json`, and the release link and version badge of both READMEs.
+
+`npm run version:check` fails when these values disagree. Pass `-- --tag vX.Y.Z` to compare them with a planned tag; in GitHub Actions tag builds, the pushed tag is checked automatically. `npm run package` zips the built `dist/` folder into `release/web2doc-<version>.zip`, then reads the archive back and verifies that it contains exactly `content.js`, `icon.png`, `manifest.json`, `popup.html`, and `popup.js`, that the manifest version matches, and that no source maps are included. Both commands run as part of `npm run check`.
+
+Release checklist:
+
+1. Update the version with `npm version <major|minor|patch> --no-git-tag-version`, then update `src/manifest.json` and both README badges and release links.
+2. Move the `Unreleased` changelog entries under the new version and date.
+3. Run `npm run ci` and `npm run version:check -- --tag vX.Y.Z`.
+4. Load `dist/` as an unpacked extension in each supported Chromium-based browser and confirm installation, CSV download (including accented text and a spreadsheet application import), the no-tables message, browser print-to-PDF, the restricted-page message, and that only `activeTab` is requested.
+5. Merge into `main`, create and push the `vX.Y.Z` tag, and attach `release/web2doc-<version>.zip` to the GitHub release.
 
 ## Permissions and page access
 
@@ -114,11 +128,16 @@ src/
   manifest.json
   popup.html
   popup.ts
+scripts/
+  check-version.ts
+  package-extension.ts
+  release/
 webpack.config.js
 tests/
   csv-formatter.test.ts
   export-services.test.ts
   popup.test.ts
+  release.test.ts
   tab-export.test.ts
   helpers.ts
 ```

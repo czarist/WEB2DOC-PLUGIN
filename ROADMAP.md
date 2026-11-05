@@ -2,7 +2,7 @@
 
 Web2Doc currently provides a popup, a CSV export for HTML tables on the active page, and a print-dialog action for saving a page as PDF. The project is a small Manifest V3 extension; the roadmap focuses first on reliable exports and verification before expanding the feature set.
 
-Last updated: 2026-11-05. This roadmap tracks the current `dev` branch, including work completed after the `v1.0.1` tag.
+Last updated: 2026-11-05. This roadmap tracks the current `dev` branch, including work completed after the `v1.0.2` tag.
 
 ## 1. Document the current extension
 
@@ -50,11 +50,12 @@ Objective: catch regressions in export behavior and keep the build repeatable.
 - [x] Cover tab lookup and messaging errors, invalid responses, printing, CSV downloads, and object URL cleanup.
 - [x] Standardize development on Node.js 26 LTS with `.nvmrc` and package engine requirements.
 - [x] Update build dependencies, target ES2022, and retain TypeScript 6 for `ts-loader` compatibility.
+- [x] Upgrade to TypeScript 7 for type checking and compile bundles with `esbuild-loader` instead of `ts-loader`.
 - [x] Commit the npm lockfile and use `npm ci` for reproducible installation.
 - [x] Provide `npm run ci` for clean installation, type checking, tests, and production builds.
 - [x] Run the same CI command on Linux, Windows, and macOS for pushes, tags, pull requests, and manual runs.
 
-Acceptance: `npm run ci` passes locally and in the three-platform GitHub Actions matrix. The current suite contains 10 tests using browser API doubles; real browser verification remains part of release preparation.
+Acceptance: `npm run ci` passes locally and in the three-platform GitHub Actions matrix. The current suite contains 18 tests using browser API doubles; real browser verification remains part of release preparation.
 
 ## 5. Prepare browser releases
 
@@ -63,10 +64,10 @@ Objective: verify the extension package and user-facing behavior before publishi
 - [ ] Test installation and export flows in supported Chromium-based browsers.
 - [x] Review page access against actual extension behavior; remove unused permissions and unnecessary persistent host access.
 - [x] Clean build output and omit inline source maps from production bundles.
-- [x] Publish Git tags `v1.0.0` and `v1.0.1`.
-- [x] Align package, lockfile, manifest, and README versions to `1.0.1` on `dev`.
-- [ ] Document release packaging and versioning.
-- [ ] Automate version consistency checks before creating future release tags.
-- [ ] Produce an installable extension archive and verify its contents before publishing.
+- [x] Publish Git tags `v1.0.0`, `v1.0.1`, and `v1.0.2`.
+- [x] Align package, lockfile, manifest, and README versions to `1.0.2` on `dev`.
+- [x] Document release packaging and versioning.
+- [x] Automate version consistency checks before creating future release tags.
+- [x] Produce an installable extension archive and verify its contents before publishing.
 
-Acceptance: a release checklist covers installation, CSV download, browser print-to-PDF, permissions, and the packaged extension.
+Acceptance: the README release checklist covers installation, CSV download, browser print-to-PDF, permissions, and the packaged extension.
