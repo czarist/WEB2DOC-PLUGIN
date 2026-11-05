@@ -1,0 +1,117 @@
+<h1 align="center">Web2Doc</h1>
+
+<h3 align="center">Exporte tabelas da web para CSV e imprima páginas em PDF.</h3>
+
+<p align="center">
+  <a href="README.md">English</a> · <a href="README.pt-BR.md">Português (Brasil)</a>
+</p>
+
+<p align="center">
+  <b>Uma extensão de navegador Manifest V3 para exportar tabelas da página ativa e salvar páginas pela caixa de impressão do navegador.</b>
+</p>
+
+<p align="center">
+  <img alt="Versão 0.3.0" src="https://img.shields.io/badge/vers%C3%A3o-0.3.0-111111?style=flat-square">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Manifest V3" src="https://img.shields.io/badge/Extens%C3%A3o%20de%20navegador-Manifest%20V3-4285F4?style=flat-square">
+  <img alt="Webpack" src="https://img.shields.io/badge/bundle%20com-Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black">
+</p>
+
+<p align="center">
+  <a href="#recursos">Recursos</a> ·
+  <a href="#começo-rápido">Começo rápido</a> ·
+  <a href="#como-funciona">Como funciona</a> ·
+  <a href="#desenvolvimento">Desenvolvimento</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
+
+## Recursos
+
+- **Exportar tabelas da página para CSV.** Reúne linhas e células de todas as tabelas HTML da página ativa e baixa o arquivo `exported_tables.csv`.
+- **Imprimir uma página em PDF.** Abre a caixa de impressão do navegador; escolha a opção de salvar como PDF para criar o arquivo.
+- **Controles no popup.** Escolha uma das ações no popup da extensão.
+
+A exportação de tabelas gera CSV, não uma planilha Excel `.xlsx`. A ação de PDF usa o fluxo de impressão do navegador em vez de gerar diretamente um arquivo PDF.
+
+## Começo rápido
+
+### Requisitos
+
+- Node.js e npm
+- Google Chrome ou outro navegador baseado em Chromium com suporte a extensões Manifest V3
+
+### Compilar e carregar a extensão
+
+```sh
+npm install
+npx webpack
+```
+
+1. Abra `chrome://extensions` no navegador.
+2. Ative o **Modo do desenvolvedor**.
+3. Selecione **Carregar sem compactação** e escolha a pasta `dist/` gerada.
+4. Abra uma página comum com tabelas HTML e selecione o ícone do Web2Doc para exportar as tabelas ou imprimir a página.
+
+Execute `npx webpack` novamente após alterar os arquivos-fonte e use **Recarregar** no cartão da extensão para carregar a nova versão.
+
+## Como funciona
+
+```text
+Botão do popup -> script de conteúdo -> controlador de exportação -> serviço CSV ou impressão
+```
+
+- `src/popup.ts` envia a ação escolhida para a aba ativa.
+- `src/content.ts` encaminha a ação para `ExportController`.
+- `src/controllers/ExportController.ts` escolhe o serviço CSV ou PDF.
+- `src/services/CSVService.ts` lê as tabelas da página e inicia o download do CSV.
+- `src/services/PDFService.ts` chama `window.print()`.
+- `src/manifest.json` define a extensão Manifest V3, o popup, o script de conteúdo e as permissões.
+
+O script de conteúdo está configurado para todas as URLs. Páginas internas do navegador e outras páginas restritas não permitem a execução de scripts de extensão, então as ações de exportação não ficam disponíveis nelas.
+
+## Desenvolvimento
+
+Instale as dependências e compile a extensão:
+
+```sh
+npm install
+npx webpack
+```
+
+Para executar o compilador TypeScript sem gerar arquivos:
+
+```sh
+npx tsc --noEmit
+```
+
+Ainda não há uma suíte de testes automatizados configurada; `npm test` é atualmente um placeholder que termina com erro.
+
+## Permissões
+
+O manifesto da extensão declara:
+
+| Permissão | Finalidade |
+|---|---|
+| `activeTab` | Concede acesso temporário à aba ativa quando a extensão é acionada. |
+| `scripting` | Declarada no manifesto; o código atual não usa a API de scripting. |
+| `downloads` | Declarada no manifesto; o código atual inicia o download do CSV por um link da página. |
+| `storage` | Declarada no manifesto; o código atual não usa o armazenamento da extensão. |
+| Acesso a hosts `<all_urls>` | Corresponder a páginas comuns para o script de conteúdo. |
+
+## Estrutura do projeto
+
+```text
+src/
+  background.ts
+  content.ts
+  controllers/
+    ExportController.ts
+  services/
+    CSVService.ts
+    PDFService.ts
+  manifest.json
+  popup.html
+  popup.ts
+webpack.config.js
+```
