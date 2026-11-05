@@ -9,7 +9,8 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "[name].js"
+        filename: "[name].js",
+        clean: true
     },
     resolve: {
         extensions: [".ts", ".js"]
@@ -32,5 +33,5 @@ module.exports = {
             ]
         })
     ],
-    devtool: "inline-source-map"
+    devtool: false
 };

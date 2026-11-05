@@ -11,8 +11,9 @@
 </p>
 
 <p align="center">
-  <img alt="Version 0.3.0" src="https://img.shields.io/badge/version-0.3.0-111111?style=flat-square">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-111111?style=flat-square">
+  <img alt="Node.js 26 LTS" src="https://img.shields.io/badge/Node.js-26_LTS-339933?style=flat-square&logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Browser%20extension-Manifest%20V3-4285F4?style=flat-square">
   <img alt="Webpack" src="https://img.shields.io/badge/bundled%20with-Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green?style=flat-square"></a>
@@ -40,13 +41,13 @@ The CSV action currently exports CSV, not an Excel `.xlsx` workbook. The PDF act
 
 ### Requirements
 
-- Node.js 20.9 or newer and npm
+- Node.js 26.13 or newer within the 26.x LTS line and npm (`.nvmrc` pins the development version)
 - Google Chrome or another Chromium-based browser with Manifest V3 extension support
 
 ### Build and load the extension
 
 ```sh
-npm install
+npm ci
 npm run build
 ```
 
@@ -75,16 +76,20 @@ The extension content script is configured for all URLs. Browser-internal pages 
 
 ## Development
 
-Install dependencies, run the focused CSV tests and type check, then build the extension:
+Install dependencies, run the CSV, messaging, and print tests and type check, then build the extension:
 
 ```sh
-npm install
+npm ci
 npm test
 npm run typecheck
 npm run build
 ```
 
 The CSV uses RFC 4180-style quoted fields, CRLF row endings, and a UTF-8 BOM to improve accented-text recognition in spreadsheet applications.
+
+Run `npm run check` for all checks. The committed lockfile makes installations reproducible. TypeScript stays on 6.x because `ts-loader` requires its compiler API; TypeScript 7 is not compatible with this build. Production bundles target ES2022 and omit inline source maps.
+
+Run `npm run ci` locally to perform a clean install followed by all checks. GitHub Actions runs the same command on Linux, Windows, and macOS for pushes (including tags) and pull requests; it can also be started manually. Clean installation replaces `node_modules` with the locked dependencies.
 
 ## Permissions and page access
 
