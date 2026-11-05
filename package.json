@@ -1,23 +1,28 @@
 {
   "name": "web2doc-plugin",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "test": "tsx --test tests/csv-formatter.test.mjs",
-    "typecheck": "tsc --noEmit"
+    "test": "tsx --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test && npm run build",
+    "ci": "npm ci && npm run check"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@types/chrome": "^0.0.301",
+    "@types/chrome": "^0.3.7",
     "copy-webpack-plugin": "^14.0.0",
-    "ts-loader": "^9.5.2",
-    "typescript": "^5.7.3",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^6.0.1",
-    "tsx": "^4.19.2"
+    "ts-loader": "^9.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "webpack": "^5.112.2",
+    "webpack-cli": "^7.3.1"
+  },
+  "private": true,
+  "engines": {
+    "node": "^26.13.0"
   }
 }

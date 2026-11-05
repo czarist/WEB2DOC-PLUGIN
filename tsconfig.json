@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2022",
     "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "strict": true,
     "esModuleInterop": true,
     "types": ["chrome"]
-  }
+  },
+  "include": ["src/**/*.ts"]
 }

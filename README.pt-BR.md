@@ -11,8 +11,9 @@
 </p>
 
 <p align="center">
-  <img alt="Versão 0.3.0" src="https://img.shields.io/badge/vers%C3%A3o-0.3.0-111111?style=flat-square">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Versão 1.0.0" src="https://img.shields.io/badge/vers%C3%A3o-1.0.0-111111?style=flat-square">
+  <img alt="Node.js 26 LTS" src="https://img.shields.io/badge/Node.js-26_LTS-339933?style=flat-square&logo=nodedotjs&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Extens%C3%A3o%20de%20navegador-Manifest%20V3-4285F4?style=flat-square">
   <img alt="Webpack" src="https://img.shields.io/badge/bundle%20com-Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black">
   <a href="LICENSE"><img alt="Licença: MIT" src="https://img.shields.io/badge/licen%C3%A7a-MIT-green?style=flat-square"></a>
@@ -40,13 +41,13 @@ A exportação de tabelas gera CSV, não uma planilha Excel `.xlsx`. A ação de
 
 ### Requisitos
 
-- Node.js 20.9 ou superior e npm
+- Node.js 26.13 ou superior na linha 26.x LTS e npm (`.nvmrc` fixa a versão de desenvolvimento)
 - Google Chrome ou outro navegador baseado em Chromium com suporte a extensões Manifest V3
 
 ### Compilar e carregar a extensão
 
 ```sh
-npm install
+npm ci
 npm run build
 ```
 
@@ -75,16 +76,20 @@ O script de conteúdo está configurado para todas as URLs. Páginas internas do
 
 ## Desenvolvimento
 
-Instale as dependências, execute os testes focados de CSV e confira os tipos antes de compilar:
+Instale as dependências, execute os testes de CSV, mensagens e impressão e confira os tipos antes de compilar:
 
 ```sh
-npm install
+npm ci
 npm test
 npm run typecheck
 npm run build
 ```
 
 O CSV usa campos entre aspas conforme as regras do formato, termina as linhas com CRLF e inclui BOM UTF-8 para facilitar o reconhecimento de textos acentuados em aplicativos de planilha.
+
+Execute `npm run check` para todas as verificações. O lockfile versionado torna as instalações reproduzíveis. O TypeScript permanece na linha 6.x porque o `ts-loader` depende da API desse compilador; o TypeScript 7 não é compatível com este build. Os bundles de produção usam ES2022 e não incluem source maps inline.
+
+Execute `npm run ci` localmente para fazer uma instalação limpa seguida de todas as verificações. O GitHub Actions executa o mesmo comando em Linux e Windows nos pushes (incluindo tags) e pull requests; também pode ser iniciado manualmente. A instalação limpa substitui `node_modules` pelas dependências do lockfile.
 
 ## Permissões e acesso às páginas
 
