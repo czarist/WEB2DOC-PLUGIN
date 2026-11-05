@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate all tests to TypeScript and include strict test type checking in local and GitHub CI.
+
+## [1.0.1] - 2026-11-05
+
 ### Added
 
 - macOS CI checks alongside Linux and Windows.

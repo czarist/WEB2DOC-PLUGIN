@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-111111?style=flat-square">
+  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v1.0.1"><img alt="Version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-111111?style=flat-square"></a>
   <img alt="Node.js 26 LTS" src="https://img.shields.io/badge/Node.js-26_LTS-339933?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Browser%20extension-Manifest%20V3-4285F4?style=flat-square">
@@ -116,8 +116,14 @@ src/
   popup.ts
 webpack.config.js
 tests/
-  csv-formatter.test.mjs
+  csv-formatter.test.ts
+  export-services.test.ts
+  popup.test.ts
+  tab-export.test.ts
+  helpers.ts
 ```
+
+Tests are written in TypeScript and executed with `tsx`. `npm run typecheck` checks both application and test code; compiled test files are not committed.
 
 ## License
 
