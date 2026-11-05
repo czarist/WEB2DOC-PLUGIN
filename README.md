@@ -89,7 +89,7 @@ The CSV uses RFC 4180-style quoted fields, CRLF row endings, and a UTF-8 BOM to 
 
 Run `npm run check` for all checks. The committed lockfile makes installations reproducible. TypeScript stays on 6.x because `ts-loader` requires its compiler API; TypeScript 7 is not compatible with this build. Production bundles target ES2022 and omit inline source maps.
 
-Run `npm run ci` locally to perform a clean install followed by all checks. GitHub Actions runs the same command on Linux and Windows for pushes (including tags) and pull requests; it can also be started manually. Clean installation replaces `node_modules` with the locked dependencies.
+Run `npm run ci` locally to perform a clean install followed by all checks. GitHub Actions runs the same command on Linux, Windows, and macOS for pushes (including tags) and pull requests; it can also be started manually. Clean installation replaces `node_modules` with the locked dependencies.
 
 ## Permissions and page access
 

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- macOS CI checks alongside Linux and Windows.
+
 ## [1.0.0] - 2026-11-05
 
 ### Changed

@@ -89,7 +89,7 @@ O CSV usa campos entre aspas conforme as regras do formato, termina as linhas co
 
 Execute `npm run check` para todas as verificações. O lockfile versionado torna as instalações reproduzíveis. O TypeScript permanece na linha 6.x porque o `ts-loader` depende da API desse compilador; o TypeScript 7 não é compatível com este build. Os bundles de produção usam ES2022 e não incluem source maps inline.
 
-Execute `npm run ci` localmente para fazer uma instalação limpa seguida de todas as verificações. O GitHub Actions executa o mesmo comando em Linux e Windows nos pushes (incluindo tags) e pull requests; também pode ser iniciado manualmente. A instalação limpa substitui `node_modules` pelas dependências do lockfile.
+Execute `npm run ci` localmente para fazer uma instalação limpa seguida de todas as verificações. O GitHub Actions executa o mesmo comando em Linux, Windows e macOS nos pushes (incluindo tags) e pull requests; também pode ser iniciado manualmente. A instalação limpa substitui `node_modules` pelas dependências do lockfile.
 
 ## Permissões e acesso às páginas
 
