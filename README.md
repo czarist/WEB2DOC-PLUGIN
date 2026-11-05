@@ -17,6 +17,7 @@
   <img alt="Manifest V3" src="https://img.shields.io/badge/Browser%20extension-Manifest%20V3-4285F4?style=flat-square">
   <img alt="Webpack" src="https://img.shields.io/badge/bundled%20with-Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green?style=flat-square"></a>
+  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/actions/workflows/check.yml"><img alt="CI: tests and build" src="https://img.shields.io/github/actions/workflow/status/czarist/WEB2DOC-PLUGIN/check.yml?branch=dev&amp;label=build&amp;style=flat-square&amp;logo=githubactions&amp;logoColor=white"></a>
 </p>
 
 <p align="center">
