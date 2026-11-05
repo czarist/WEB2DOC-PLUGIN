@@ -116,8 +116,14 @@ src/
   popup.ts
 webpack.config.js
 tests/
-  csv-formatter.test.mjs
+  csv-formatter.test.ts
+  export-services.test.ts
+  popup.test.ts
+  tab-export.test.ts
+  helpers.ts
 ```
+
+Os testes são escritos em TypeScript e executados com `tsx`. O comando `npm run typecheck` verifica o código da aplicação e dos testes; os arquivos compilados dos testes não são versionados.
 
 ## Licença
 
