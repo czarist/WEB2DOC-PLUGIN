@@ -3,6 +3,7 @@ node_modules/
 
 # Compiled output
 dist/
+release/
 
 # TypeScript build artifacts
 *.js.map

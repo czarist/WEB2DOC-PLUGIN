@@ -6,8 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-11-05
+
+### Added
+
+- `npm run version:check` verifies that package, lockfile, manifest, and README versions agree, and match the Git tag in tag builds.
+- `npm run package` creates `release/web2doc-<version>.zip` from `dist/` and verifies the archive contents.
+- Release packaging, versioning, and a release checklist in both READMEs.
+
 ### Changed
 
+- Upgrade TypeScript to 7.0.2 and replace `ts-loader` with `esbuild-loader`, because TypeScript 7 no longer provides the compiler API that `ts-loader` requires.
 - Migrate all tests to TypeScript and include strict test type checking in local and GitHub CI.
 
 ## [1.0.1] - 2026-11-05

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Web2Doc - Conversor Inteligente",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Exporta tabelas da web para CSV e imprime páginas",
   "permissions": ["activeTab"],
   "action": {

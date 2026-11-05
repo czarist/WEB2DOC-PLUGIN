@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v1.0.1"><img alt="Versão 1.0.1" src="https://img.shields.io/badge/vers%C3%A3o-1.0.1-111111?style=flat-square"></a>
+  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v1.0.2"><img alt="Versão 1.0.2" src="https://img.shields.io/badge/vers%C3%A3o-1.0.2-111111?style=flat-square"></a>
   <img alt="Node.js 26 LTS" src="https://img.shields.io/badge/Node.js-26_LTS-339933?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Extens%C3%A3o%20de%20navegador-Manifest%20V3-4285F4?style=flat-square">
@@ -88,9 +88,23 @@ npm run build
 
 O CSV usa campos entre aspas conforme as regras do formato, termina as linhas com CRLF e inclui BOM UTF-8 para facilitar o reconhecimento de textos acentuados em aplicativos de planilha.
 
-Execute `npm run check` para todas as verificações. O lockfile versionado torna as instalações reproduzíveis. O TypeScript permanece na linha 6.x porque o `ts-loader` depende da API desse compilador; o TypeScript 7 não é compatível com este build. Os bundles de produção usam ES2022 e não incluem source maps inline.
+Execute `npm run check` para todas as verificações. O lockfile versionado torna as instalações reproduzíveis. A checagem de tipos usa o TypeScript 7 (`tsc`). O Webpack compila o TypeScript com o `esbuild-loader`, que remove os tipos sem depender da API do compilador, que o TypeScript 7 não oferece mais; `isolatedModules` e `verbatimModuleSyntax` garantem que essa compilação por arquivo seja segura. Os bundles de produção usam ES2022 e não incluem source maps inline.
 
 Execute `npm run ci` localmente para fazer uma instalação limpa seguida de todas as verificações. O GitHub Actions executa o mesmo comando em Linux, Windows e macOS nos pushes (incluindo tags) e pull requests; também pode ser iniciado manualmente. A instalação limpa substitui `node_modules` pelas dependências do lockfile.
+
+## Publicação de versões
+
+As versões seguem o [versionamento semântico](https://semver.org/lang/pt-BR/) e são identificadas por tags Git no formato `vMAJOR.MINOR.PATCH`. A versão fica registrada em `package.json`, `package-lock.json`, `src/manifest.json` e no link de release e no badge de versão dos dois READMEs.
+
+`npm run version:check` falha quando esses valores divergem. Use `-- --tag vX.Y.Z` para compará-los com uma tag planejada; nos builds de tag do GitHub Actions, a tag enviada é verificada automaticamente. `npm run package` compacta a pasta `dist/` em `release/web2doc-<versão>.zip` e depois relê o arquivo para confirmar que ele contém exatamente `content.js`, `icon.png`, `manifest.json`, `popup.html` e `popup.js`, que a versão do manifesto confere e que não há source maps. Os dois comandos fazem parte de `npm run check`.
+
+Checklist de publicação:
+
+1. Atualize a versão com `npm version <major|minor|patch> --no-git-tag-version` e depois atualize `src/manifest.json` e os badges e links de release dos dois READMEs.
+2. Mova as entradas `Unreleased` do changelog para a nova versão e data.
+3. Execute `npm run ci` e `npm run version:check -- --tag vX.Y.Z`.
+4. Carregue `dist/` como extensão sem empacotamento em cada navegador Chromium suportado e confirme a instalação, o download do CSV (incluindo texto acentuado e importação em um aplicativo de planilha), a mensagem de página sem tabelas, a impressão para PDF do navegador, a mensagem de página restrita e que apenas `activeTab` é solicitada.
+5. Faça o merge em `main`, crie e envie a tag `vX.Y.Z` e anexe `release/web2doc-<versão>.zip` ao release do GitHub.
 
 ## Permissões e acesso às páginas
 
@@ -114,11 +128,16 @@ src/
   manifest.json
   popup.html
   popup.ts
+scripts/
+  check-version.ts
+  package-extension.ts
+  release/
 webpack.config.js
 tests/
   csv-formatter.test.ts
   export-services.test.ts
   popup.test.ts
+  release.test.ts
   tab-export.test.ts
   helpers.ts
 ```

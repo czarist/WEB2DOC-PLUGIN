@@ -5,5 +5,5 @@
     "allowImportingTsExtensions": true,
     "types": ["chrome", "node"]
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
 }
