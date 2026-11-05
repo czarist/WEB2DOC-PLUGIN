@@ -4,11 +4,8 @@ import { stubGlobal } from "./helpers.ts";
 import { CSVService } from "../src/services/CSVService.ts";
 import { ExportController } from "../src/controllers/ExportController.ts";
 
-test("PDF opens the browser print workflow", (t) => {
-  let printed = false;
-  stubGlobal(t, "window", { print() { printed = true; } });
-  assert.equal(ExportController.handleExport("exportPDF").success, true);
-  assert.equal(printed, true);
+test("the content script handles CSV only; PDF capture runs in the background", () => {
+  assert.deepEqual(ExportController.handleExport("exportPDF"), { success: false, message: "Unsupported export action." });
 });
 
 test("CSV downloads UTF-8 data and releases the object URL on success and failure", async (t) => {
@@ -25,7 +22,7 @@ test("CSV downloads UTF-8 data and releases the object URL on success and failur
   };
   stubGlobal(t, "document", documentStub);
   stubGlobal(t, "window", { setTimeout(callback: () => void) { cleanup = callback; } });
-  const tables = [{ querySelectorAll: () => [{ querySelectorAll: () => [{ textContent: "ação" }] }] }];
+  const tables = [{ rows: [{ cells: [{ textContent: "  ação\n " }] }] }];
   // The service only reads rows and cells; this fixture intentionally omits the rest of the DOM.
   const tableElements = tables as unknown as HTMLTableElement[];
   assert.equal(CSVService.exportTablesToCSV(tableElements).success, true);

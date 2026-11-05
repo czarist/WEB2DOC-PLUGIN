@@ -4,6 +4,7 @@ const path = require("path");
 module.exports = {
     mode: "production",
     entry: {
+        background: "./src/background.ts",
         content: "./src/content.ts",
         popup: "./src/popup.ts"
     },
@@ -29,7 +30,7 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: "src/manifest.json", to: "manifest.json" },
-                { from: "src/icon.png", to: "icon.png" },
+                { from: "src/icons/*.png", to: "icons/[name][ext]" },
                 { from: "src/popup.html", to: "popup.html" }
             ]
         })

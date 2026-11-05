@@ -1,7 +1,17 @@
 import type { ZipEntry } from "./zip.ts";
 
 /** Files the built extension must contain, and nothing else. */
-export const EXPECTED_FILES = ["content.js", "icon.png", "manifest.json", "popup.html", "popup.js"] as const;
+export const EXPECTED_FILES = [
+  "background.js",
+  "content.js",
+  "icons/icon-16.png",
+  "icons/icon-32.png",
+  "icons/icon-48.png",
+  "icons/icon-128.png",
+  "manifest.json",
+  "popup.html",
+  "popup.js"
+] as const;
 
 export function archiveName(version: string): string {
   return `web2doc-${version}.zip`;

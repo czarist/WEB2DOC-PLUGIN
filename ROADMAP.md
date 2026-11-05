@@ -1,8 +1,8 @@
 # Roadmap
 
-Web2Doc currently provides a popup, a CSV export for HTML tables on the active page, and a print-dialog action for saving a page as PDF. The project is a small Manifest V3 extension; the roadmap focuses first on reliable exports and verification before expanding the feature set.
+Web2Doc currently provides a popup, a CSV export for HTML tables on the active page, and a PDF export that captures the page with its screen styles, images, and links. The project is a small Manifest V3 extension; the roadmap focuses first on reliable exports and verification before expanding the feature set.
 
-Last updated: 2026-11-05. This roadmap tracks the current `dev` branch, including work completed after the `v1.0.2` tag.
+Last updated: 2026-11-05. This roadmap tracks the current `dev` branch, including work completed after the `v1.1.2` tag.
 
 ## 1. Document the current extension
 
@@ -55,7 +55,7 @@ Objective: catch regressions in export behavior and keep the build repeatable.
 - [x] Provide `npm run ci` for clean installation, type checking, tests, and production builds.
 - [x] Run the same CI command on Linux, Windows, and macOS for pushes, tags, pull requests, and manual runs.
 
-Acceptance: `npm run ci` passes locally and in the three-platform GitHub Actions matrix. The current suite contains 18 tests using browser API doubles; real browser verification remains part of release preparation.
+Acceptance: `npm run ci` passes locally and in the three-platform GitHub Actions matrix. The current suite contains 30 tests using browser API doubles; real browser verification remains part of release preparation.
 
 ## 5. Prepare browser releases
 
@@ -64,10 +64,24 @@ Objective: verify the extension package and user-facing behavior before publishi
 - [ ] Test installation and export flows in supported Chromium-based browsers.
 - [x] Review page access against actual extension behavior; remove unused permissions and unnecessary persistent host access.
 - [x] Clean build output and omit inline source maps from production bundles.
-- [x] Publish Git tags `v1.0.0`, `v1.0.1`, and `v1.0.2`.
-- [x] Align package, lockfile, manifest, and README versions to `1.0.2` on `dev`.
+- [x] Publish Git tags `v1.0.0`, `v1.0.1`, `v1.0.2`, and `v1.1.2`.
+- [x] Align package, lockfile, manifest, and README versions to `1.1.2` on `dev`.
 - [x] Document release packaging and versioning.
 - [x] Automate version consistency checks before creating future release tags.
 - [x] Produce an installable extension archive and verify its contents before publishing.
 
-Acceptance: the README release checklist covers installation, CSV download, browser print-to-PDF, permissions, and the packaged extension.
+Acceptance: the README release checklist covers installation, CSV download, styled PDF download, permissions, and the packaged extension.
+
+## 6. Richer exports and popup
+
+Objective: let users choose what to export and get files that match what they see on the page.
+
+- [x] Let users choose which tables to export, with titles, sizes, and previews in the popup and numbered outlines on the page.
+- [x] Read CSV cells as rendered text, without hidden sort keys or embedded styles.
+- [x] Generate PDFs with screen styles, backgrounds, lazy-loaded images, clickable links, and a heading outline instead of opening the print dialog.
+- [x] Redesign the popup with light and dark themes, keyboard focus, and color-coded status messages.
+- [x] Replace the extension icon with a minimal icon set, including a pixel-aligned 16 px toolbar version.
+- [x] Add `npm run dev` to build in watch mode and open Chrome with the extension loaded.
+- [ ] Verify the table picker, page highlights, and PDF capture on a range of real websites during release checks.
+
+Acceptance: users can export only the tables they select and save a PDF that keeps the page's look and links; automated tests cover table discovery, selection, and PDF capture with browser API doubles.

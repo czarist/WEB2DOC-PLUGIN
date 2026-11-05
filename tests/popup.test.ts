@@ -10,7 +10,7 @@ test("popup disables controls during export and restores them after a rejected m
   }
   const csv = new Button();
   const pdf = new Button();
-  const status = { textContent: "" };
+  const status = { textContent: "", dataset: {} as Record<string, string> };
   let initialize: (() => void) | undefined;
   let rejectMessage: ((reason: Error) => void) | undefined;
   const elements: Record<string, Button | typeof status> = { exportCSV: csv, exportPDF: pdf, exportStatus: status };
@@ -37,4 +37,5 @@ test("popup disables controls during export and restores them after a rejected m
   assert.equal(csv.disabled, false);
   assert.equal(pdf.disabled, false);
   assert.match(status.textContent, /can't be accessed/);
+  assert.equal(status.dataset["state"], "error");
 });

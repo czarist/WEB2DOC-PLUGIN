@@ -58,8 +58,12 @@ test("ZIP reader detects corrupted content", () => {
 
 function extensionEntries(manifest: object, extra: Record<string, string> = {}) {
   const files: Record<string, string> = {
+    "background.js": "console.log(0);",
     "content.js": "console.log(1);",
-    "icon.png": "png",
+    "icons/icon-16.png": "png",
+    "icons/icon-32.png": "png",
+    "icons/icon-48.png": "png",
+    "icons/icon-128.png": "png",
     "manifest.json": JSON.stringify(manifest),
     "popup.html": "<html></html>",
     "popup.js": "console.log(2);",
@@ -76,10 +80,10 @@ test("rejects missing, unexpected, mis-versioned, and source-mapped files", () =
   const entries = extensionEntries(
     { manifest_version: 3, version: "1.0.0" },
     { "popup.js": "x\n//# sourceMappingURL=popup.js.map", "popup.js.map": "{}" }
-  ).filter((entry) => entry.name !== "icon.png");
+  ).filter((entry) => entry.name !== "icons/icon-16.png");
 
   assert.deepEqual(verifyPackageEntries(entries, "1.0.1"), [
-    "Missing file: icon.png",
+    "Missing file: icons/icon-16.png",
     "Unexpected file: popup.js.map",
     "manifest.json: version 1.0.0 does not match 1.0.1.",
     "popup.js: contains a source map reference."
