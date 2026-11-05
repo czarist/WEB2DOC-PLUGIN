@@ -29,6 +29,7 @@
 ## Features
 
 - **Export page tables to CSV.** Collects the rows and cells from every HTML table on the active page and downloads them as `exported_tables.csv`.
+- **Clear export feedback.** The popup reports when the active page has no tables or cannot be reached.
 - **Print a page to PDF.** Opens the browser's print dialog; choose the browser's save-to-PDF destination to create a PDF.
 - **Popup controls.** Choose either action from the extension popup.
 
@@ -38,14 +39,14 @@ The CSV action currently exports CSV, not an Excel `.xlsx` workbook. The PDF act
 
 ### Requirements
 
-- Node.js and npm
+- Node.js 20.9 or newer and npm
 - Google Chrome or another Chromium-based browser with Manifest V3 extension support
 
 ### Build and load the extension
 
 ```sh
 npm install
-npx webpack
+npm run build
 ```
 
 1. Open `chrome://extensions` in the browser.
@@ -53,7 +54,7 @@ npx webpack
 3. Select **Load unpacked** and choose the generated `dist/` directory.
 4. Open a regular webpage with HTML tables, then select the Web2Doc toolbar icon to export tables or print the page.
 
-Re-run `npx webpack` after changing source files, then use **Reload** on the extension card to load the updated build.
+Re-run `npm run build` after changing source files, then use **Reload** on the extension card to load the updated build.
 
 ## How it works
 
@@ -62,9 +63,10 @@ Popup button -> content script -> export controller -> CSV or print service
 ```
 
 - `src/popup.ts` sends the selected action to the active tab.
-- `src/content.ts` passes the action to `ExportController`.
+- `src/content.ts` passes the action to `ExportController` and reports the result to the popup.
 - `src/controllers/ExportController.ts` selects the CSV or PDF service.
-- `src/services/CSVService.ts` reads page tables and triggers a CSV download.
+- `src/services/CSVService.ts` reads page tables and starts a UTF-8 CSV download.
+- `src/services/CSVFormatter.ts` escapes CSV fields and separates multiple tables.
 - `src/services/PDFService.ts` calls `window.print()`.
 - `src/manifest.json` defines the Manifest V3 extension, popup, content script, and permissions.
 
@@ -72,46 +74,40 @@ The extension content script is configured for all URLs. Browser-internal pages 
 
 ## Development
 
-Install dependencies and build the extension:
+Install dependencies, run the focused CSV tests and type check, then build the extension:
 
 ```sh
 npm install
-npx webpack
+npm test
+npm run typecheck
+npm run build
 ```
 
-To run the TypeScript compiler without emitting files:
+The CSV uses RFC 4180-style quoted fields, CRLF row endings, and a UTF-8 BOM to improve accented-text recognition in spreadsheet applications.
 
-```sh
-npx tsc --noEmit
-```
+## Permissions and page access
 
-There is no automated test suite configured yet; `npm test` is currently a placeholder that exits with an error.
+The extension requests `activeTab` for the selected tab. Its content script is configured with the `<all_urls>` match pattern so it can run on regular webpages; browser-internal and restricted pages remain unavailable.
 
-## Permissions
-
-The extension manifest declares:
-
-| Permission | Purpose |
-|---|---|
-| `activeTab` | Grants temporary access to the active tab when the extension is invoked. |
-| `scripting` | Declared in the manifest; the current source does not use the scripting API. |
-| `downloads` | Declared in the manifest; the current source triggers the CSV download through a page link. |
-| `storage` | Declared in the manifest; the current source does not use extension storage. |
-| `<all_urls>` host access | Match regular webpages for the content script. |
+No `downloads`, `storage`, `scripting`, or persistent `host_permissions` are declared.
 
 ## Project layout
 
 ```text
 src/
-  background.ts
   content.ts
   controllers/
     ExportController.ts
   services/
     CSVService.ts
+    CSVFormatter.ts
     PDFService.ts
+  types/
+    ExportResult.ts
   manifest.json
   popup.html
   popup.ts
 webpack.config.js
+tests/
+  csv-formatter.test.mjs
 ```

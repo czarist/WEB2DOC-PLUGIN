@@ -29,6 +29,7 @@
 ## Recursos
 
 - **Exportar tabelas da página para CSV.** Reúne linhas e células de todas as tabelas HTML da página ativa e baixa o arquivo `exported_tables.csv`.
+- **Retorno claro da exportação.** O popup informa quando a página ativa não tem tabelas ou não pode ser acessada.
 - **Imprimir uma página em PDF.** Abre a caixa de impressão do navegador; escolha a opção de salvar como PDF para criar o arquivo.
 - **Controles no popup.** Escolha uma das ações no popup da extensão.
 
@@ -38,14 +39,14 @@ A exportação de tabelas gera CSV, não uma planilha Excel `.xlsx`. A ação de
 
 ### Requisitos
 
-- Node.js e npm
+- Node.js 20.9 ou superior e npm
 - Google Chrome ou outro navegador baseado em Chromium com suporte a extensões Manifest V3
 
 ### Compilar e carregar a extensão
 
 ```sh
 npm install
-npx webpack
+npm run build
 ```
 
 1. Abra `chrome://extensions` no navegador.
@@ -53,7 +54,7 @@ npx webpack
 3. Selecione **Carregar sem compactação** e escolha a pasta `dist/` gerada.
 4. Abra uma página comum com tabelas HTML e selecione o ícone do Web2Doc para exportar as tabelas ou imprimir a página.
 
-Execute `npx webpack` novamente após alterar os arquivos-fonte e use **Recarregar** no cartão da extensão para carregar a nova versão.
+Execute `npm run build` novamente após alterar os arquivos-fonte e use **Recarregar** no cartão da extensão para carregar a nova versão.
 
 ## Como funciona
 
@@ -62,9 +63,10 @@ Botão do popup -> script de conteúdo -> controlador de exportação -> serviç
 ```
 
 - `src/popup.ts` envia a ação escolhida para a aba ativa.
-- `src/content.ts` encaminha a ação para `ExportController`.
+- `src/content.ts` encaminha a ação para `ExportController` e devolve o resultado ao popup.
 - `src/controllers/ExportController.ts` escolhe o serviço CSV ou PDF.
-- `src/services/CSVService.ts` lê as tabelas da página e inicia o download do CSV.
+- `src/services/CSVService.ts` lê as tabelas da página e inicia o download de um CSV UTF-8.
+- `src/services/CSVFormatter.ts` escapa os campos CSV e separa várias tabelas.
 - `src/services/PDFService.ts` chama `window.print()`.
 - `src/manifest.json` define a extensão Manifest V3, o popup, o script de conteúdo e as permissões.
 
@@ -72,46 +74,40 @@ O script de conteúdo está configurado para todas as URLs. Páginas internas do
 
 ## Desenvolvimento
 
-Instale as dependências e compile a extensão:
+Instale as dependências, execute os testes focados de CSV e confira os tipos antes de compilar:
 
 ```sh
 npm install
-npx webpack
+npm test
+npm run typecheck
+npm run build
 ```
 
-Para executar o compilador TypeScript sem gerar arquivos:
+O CSV usa campos entre aspas conforme as regras do formato, termina as linhas com CRLF e inclui BOM UTF-8 para facilitar o reconhecimento de textos acentuados em aplicativos de planilha.
 
-```sh
-npx tsc --noEmit
-```
+## Permissões e acesso às páginas
 
-Ainda não há uma suíte de testes automatizados configurada; `npm test` é atualmente um placeholder que termina com erro.
+A extensão solicita `activeTab` para a aba selecionada. O script de conteúdo usa o padrão de correspondência `<all_urls>` para funcionar em páginas comuns; páginas internas ou restritas do navegador continuam indisponíveis.
 
-## Permissões
-
-O manifesto da extensão declara:
-
-| Permissão | Finalidade |
-|---|---|
-| `activeTab` | Concede acesso temporário à aba ativa quando a extensão é acionada. |
-| `scripting` | Declarada no manifesto; o código atual não usa a API de scripting. |
-| `downloads` | Declarada no manifesto; o código atual inicia o download do CSV por um link da página. |
-| `storage` | Declarada no manifesto; o código atual não usa o armazenamento da extensão. |
-| Acesso a hosts `<all_urls>` | Corresponder a páginas comuns para o script de conteúdo. |
+O manifesto não declara `downloads`, `storage`, `scripting` nem permissões persistentes em `host_permissions`.
 
 ## Estrutura do projeto
 
 ```text
 src/
-  background.ts
   content.ts
   controllers/
     ExportController.ts
   services/
     CSVService.ts
+    CSVFormatter.ts
     PDFService.ts
+  types/
+    ExportResult.ts
   manifest.json
   popup.html
   popup.ts
 webpack.config.js
+tests/
+  csv-formatter.test.mjs
 ```
