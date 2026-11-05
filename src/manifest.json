@@ -2,12 +2,8 @@
   "manifest_version": 3,
   "name": "Web2Doc - Conversor Inteligente",
   "version": "1.0",
-  "description": "Exporta tabelas da web para Excel e páginas para PDF",
-  "permissions": ["activeTab", "storage", "downloads", "scripting"],
-  "host_permissions": ["<all_urls>"],
-  "background": {
-    "service_worker": "background.js"
-  },
+  "description": "Exporta tabelas da web para CSV e imprime páginas",
+  "permissions": ["activeTab"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
