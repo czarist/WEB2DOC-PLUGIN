@@ -15,6 +15,7 @@
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Extens%C3%A3o%20de%20navegador-Manifest%20V3-4285F4?style=flat-square">
   <img alt="Webpack" src="https://img.shields.io/badge/bundle%20com-Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black">
+  <a href="LICENSE"><img alt="Licença: MIT" src="https://img.shields.io/badge/licen%C3%A7a-MIT-green?style=flat-square"></a>
 </p>
 
 <p align="center">
@@ -111,3 +112,7 @@ webpack.config.js
 tests/
   csv-formatter.test.mjs
 ```
+
+## Licença
+
+Este projeto é distribuído sob a [licença MIT](LICENSE).
