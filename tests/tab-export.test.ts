@@ -32,7 +32,7 @@ test("active tab export handles success, missing tabs, rejected APIs and invalid
   browser.tabs.sendMessage = async () => null;
   assert.match((await exportActiveTab("exportCSV")).message, /invalid response/);
   browser.tabs.sendMessage = async () => { throw new Error("Restricted page"); };
-  assert.match((await exportActiveTab("exportPDF")).message, /can't be accessed/);
+  assert.match((await exportActiveTab("exportCSV")).message, /can't be accessed/);
   for (const tabs of [[], [{}]]) {
     browser.tabs.query = async () => tabs;
     assert.match((await exportActiveTab("exportCSV")).message, /Could not find/);

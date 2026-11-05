@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-11-05
+
+### Added
+
+- CSV export now opens a table picker: the popup lists the page's tables with titles, sizes, and previews, the page outlines and numbers each table, and only the checked tables are exported.
+- `npm run dev` builds in watch mode and opens Chrome with a separate profile and the extension loaded.
+
+### Changed
+
+- CSV cells are read as rendered text, which drops hidden sort keys and embedded style text, separates words split by line breaks, and trims surrounding whitespace.
+- The PDF action now generates and downloads a PDF of the page with its screen styles, backgrounds, lazy-loaded images, clickable links, and a heading outline, instead of opening the print dialog. It uses a background service worker and the `debugger` and `downloads` permissions.
+- Redesign the popup with described actions, light and dark themes, visible keyboard focus, and color-coded status messages.
+- Replace the extension icon with a new minimal icon in 16, 32, 48, and 128 px sizes, including a pixel-aligned 16 px toolbar version.
+
 ## [1.0.2] - 2026-11-05
 
 ### Added

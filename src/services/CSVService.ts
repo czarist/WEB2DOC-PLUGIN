@@ -1,4 +1,5 @@
 import { formatTablesAsCSV } from "./CSVFormatter";
+import { readTable } from "./TableService";
 import type { ExportResult } from "../types/ExportResult";
 
 export class CSVService {
@@ -14,11 +15,7 @@ export class CSVService {
       };
     }
 
-    const tableData = tables.map((table) =>
-      Array.from(table.querySelectorAll("tr"), (row) =>
-        Array.from(row.querySelectorAll("td, th"), (cell) => cell.textContent ?? "")
-      )
-    );
+    const tableData = tables.map(readTable);
     const csvContent = formatTablesAsCSV(tableData);
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -46,7 +43,7 @@ export class CSVService {
 
     return {
       success: true,
-      message: "CSV download started."
+      message: tables.length === 1 ? "CSV download started for 1 table." : `CSV download started for ${tables.length} tables.`
     };
   }
 }

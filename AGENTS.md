@@ -4,10 +4,10 @@ Guidelines for contributors and coding agents working on Web2Doc.
 
 ## Project context
 
-Web2Doc is a TypeScript browser extension using Manifest V3 and Webpack. Its popup sends actions to a content script; `ExportController` routes those actions to the CSV and print services.
+Web2Doc is a TypeScript browser extension using Manifest V3 and Webpack. Its popup sends CSV actions to a content script, where `ExportController` routes them to the CSV service, and PDF actions to a background service worker, where `PagePDFService` renders the tab with `chrome.debugger` and `Page.printToPDF`.
 
 - Table export currently downloads CSV; do not describe it as `.xlsx` export unless that capability is implemented.
-- The PDF action calls the browser's `window.print()` workflow; it does not generate or download a PDF directly.
+- The PDF action generates and downloads a PDF of the page with screen styles, images, and links; it does not open the print dialog. It requires the `debugger` and `downloads` permissions.
 - The extension is configured to match all URLs, but browser-internal and restricted pages do not allow content scripts.
 
 See [README.md](README.md) for user-facing behavior and setup, [ROADMAP.md](ROADMAP.md) for planned work, and [CHANGELOG.md](CHANGELOG.md) for notable changes.
