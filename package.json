@@ -1,6 +1,6 @@
 {
   "name": "web2doc-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "webpack",
     "test": "tsx --test tests/*.test.ts",
