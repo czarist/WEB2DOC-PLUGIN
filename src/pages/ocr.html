@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text recognition</title>
+    <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <img src="icons/icon-128.png" alt="" width="36" height="36">
+        <div>
+            <h1>Text recognition</h1>
+            <p id="ocrSource">Text is recognized on this device; the image is not sent anywhere.</p>
+        </div>
+    </div>
+
+    <section aria-labelledby="imageTitle">
+        <h2 id="imageTitle">Image</h2>
+        <div class="row spaced-bottom">
+            <label class="field compact"><span>Language</span>
+                <select id="ocrLanguage">
+                    <option value="eng">English</option>
+                    <option value="por">Portuguese</option>
+                    <option value="eng+por">English and Portuguese</option>
+                </select>
+            </label>
+            <button class="secondary" type="button" id="recognizeAgain">Recognize again</button>
+        </div>
+        <img id="ocrImage" class="ocr-image" alt="The captured image" hidden>
+        <p class="empty" id="ocrEmpty" hidden>There is no image to read. Choose “Text (OCR)” when saving part of a page, or “Text from screen” in the popup.</p>
+    </section>
+
+    <section aria-labelledby="textTitle">
+        <h2 id="textTitle">Recognized text</h2>
+        <progress id="ocrProgress" max="1" value="0" aria-label="Recognition progress"></progress>
+        <p class="status" id="ocrStatus" role="status" aria-live="polite"></p>
+        <label class="field wide"><span class="visually-hidden">Recognized text</span><textarea id="ocrText" rows="14" readonly></textarea></label>
+        <div class="row">
+            <button class="primary" type="button" id="copyText" disabled>Copy text</button>
+            <button class="secondary" type="button" id="downloadText" disabled>Download .txt</button>
+        </div>
+    </section>
+</main>
+<script src="ocr.js"></script>
+</body>
+</html>

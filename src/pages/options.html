@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web2Doc settings</title>
+    <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <img src="icons/icon-128.png" alt="" width="36" height="36">
+        <div>
+            <h1>Web2Doc settings</h1>
+            <p>Everything here is stored only in this browser.</p>
+        </div>
+    </div>
+
+    <section aria-labelledby="filesTitle">
+        <h2 id="filesTitle">File names and PDF pages</h2>
+        <p class="section-intro">Changes are saved as you make them.</p>
+        <label class="field">
+            <span>File name pattern</span>
+            <input type="text" id="fileNamePattern" name="fileNamePattern" autocomplete="off" spellcheck="false">
+            <span class="help">Fields: <code>{title}</code> page title, <code>{date}</code> today, <code>{time}</code> current time, <code>{host}</code> site address, <code>{label}</code> what was exported, such as “tables”.</span>
+        </label>
+        <label class="check">
+            <input type="checkbox" id="pdfHeaderFooter">
+            <span>Add a header and footer to PDF pages<small>The page title and address at the top, the date and page numbers at the bottom.</small></span>
+        </label>
+        <label class="check">
+            <input type="checkbox" id="pdfQrCode">
+            <span>Add a QR code linking to the source page<small>Shown in the PDF header.</small></span>
+        </label>
+        <p class="status" id="preferencesStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <section aria-labelledby="presetsTitle">
+        <h2 id="presetsTitle">Presets</h2>
+        <p class="section-intro">A preset saves what to export and in which format, so it runs with one click from the popup, the right-click menu, a keyboard shortcut, or a batch export.</p>
+        <label class="field">
+            <span>Default preset</span>
+            <select id="defaultPreset"></select>
+            <span class="help">Runs with the “Run the default preset” shortcut.</span>
+        </label>
+        <ul class="list" id="presetList"></ul>
+        <h3 class="subheading">New preset</h3>
+        <form id="presetForm" class="row preset-form">
+            <label class="field compact"><span>Name</span><input type="text" id="presetName" required maxlength="80" autocomplete="off"></label>
+            <label class="field compact"><span>Content</span>
+                <select id="presetScope">
+                    <option value="main">Main content</option>
+                    <option value="page">Whole page</option>
+                    <option value="tables">Tables</option>
+                </select>
+            </label>
+            <label class="field compact"><span>Format</span><select id="presetFormat"></select></label>
+            <button class="primary" type="submit">Add preset</button>
+        </form>
+        <label class="check spaced" id="presetConvertOption">
+            <input type="checkbox" id="presetConvert" checked>
+            <span>Convert numbers, dates, and currencies</span>
+        </label>
+        <p class="status" id="presetStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <section aria-labelledby="shortcutsTitle">
+        <h2 id="shortcutsTitle">Keyboard shortcuts and menu</h2>
+        <p class="section-intro">Right-click any page and choose Web2Doc to save it, start a selection, or run a preset. Shortcuts can be changed on the browser’s shortcuts page.</p>
+        <table>
+            <thead><tr><th scope="col">Action</th><th scope="col">Shortcut</th></tr></thead>
+            <tbody id="shortcutList"></tbody>
+        </table>
+        <div class="row spaced"><button class="secondary" type="button" id="openShortcuts">Change shortcuts</button></div>
+    </section>
+
+    <section aria-labelledby="historyTitle">
+        <h2 id="historyTitle">Recent exports</h2>
+        <label class="check">
+            <input type="checkbox" id="keepHistory">
+            <span>Keep a list of recent exports<small>Up to 100 entries with the page title, address, format, and file name.</small></span>
+        </label>
+        <div id="historyTable"></div>
+        <div class="row spaced">
+            <button class="danger" type="button" id="clearHistory">Clear history</button>
+            <button class="danger" type="button" id="clearSnapshots">Clear saved comparisons</button>
+        </div>
+        <p class="status" id="historyStatus" role="status" aria-live="polite"></p>
+    </section>
+</main>
+<script src="options.js"></script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { stubGlobal } from "./helpers.ts";
-import { exportActiveTab } from "../src/services/TabExportService.ts";
-import { isExportResult } from "../src/types/ExportResult.ts";
+import { exportActiveTab } from "../src/popup/TabExportService.ts";
+import { isExportResult } from "../src/shared/messages.ts";
 
 test("validates responses from the content script", () => {
   for (const value of [null, undefined, [], "ok", {}, { success: "true", message: "ok" }, { success: true }]) {
@@ -23,7 +23,7 @@ test("active tab export handles success, missing tabs, rejected APIs and invalid
     },
     sendMessage: async (id, message) => {
       assert.equal(id, 0);
-      assert.deepEqual(message, { action: "exportCSV" });
+      assert.deepEqual(message, { action: "exportTables", format: "csv" });
       return result;
     }
   } };

@@ -2,14 +2,15 @@
   "manifest_version": 3,
   "name": "Web2Doc - Conversor Inteligente",
   "version": "1.1.2",
-  "description": "Exporta tabelas da web para CSV e imprime páginas",
+  "description": "Salve páginas e partes delas em PDF, imagem, Markdown, JSON, Word, Excel e CSV, tudo no seu navegador.",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": ["activeTab", "debugger", "downloads"],
+  "permissions": ["activeTab", "debugger", "downloads", "storage", "contextMenus"],
+  "optional_permissions": ["tabs"],
   "background": {
     "service_worker": "background.js"
   },
@@ -21,6 +22,27 @@
       "48": "icons/icon-48.png",
       "128": "icons/icon-128.png"
     }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "save-page-pdf": {
+      "suggested_key": { "default": "Alt+Shift+F" },
+      "description": "Save the page as PDF"
+    },
+    "save-part": {
+      "suggested_key": { "default": "Alt+Shift+S" },
+      "description": "Save part of the page"
+    },
+    "run-default-preset": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "Run the default preset"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
   "content_scripts": [{
     "matches": ["<all_urls>"],

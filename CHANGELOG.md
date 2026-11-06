@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Save part of a page. The popup's **Save part of the page** action opens tools on the page: an outline follows the pointer or the arrow keys, and a click or Enter chooses the section. Elements inside open shadow roots and whole frames can be chosen. Inside the selection, tools exclude, highlight, point an arrow at, comment on, redact, add a page break before, or move parts, with undo and restore all. Users set the title and file name, review the page with only what will be saved, and save it as PDF, PNG, Markdown, JSON or Word, send it to text recognition, or copy it as Markdown. Esc cancels at any time, and the page is restored after saving, going back, canceling, or a failed export.
+- Redaction removes the redacted text, link addresses and alternative texts from the saved file instead of only covering them.
+- Save an area: drag a rectangle and save it as PNG, as a PDF of that image, or as recognized text.
+- Excel export for tables: one worksheet per table with valid, unique names, frozen headers and filters. Leading zeros and formula-like text stay text; numbers, dates, percentages and currencies are converted when the page language makes them unambiguous.
+- Markdown, JSON and Word exports of the page's main content or of a selection, with the title, address and capture date. JSON follows the versioned schema in `schemas/web2doc-document-v1.schema.json`. Markdown can be copied to the clipboard.
+- Tools: offline archive (MHTML), page images as a ZIP, links and metadata as an Excel workbook, local text recognition of the visible area (English and Portuguese, bundled), comparison between captures of a page, and a QR code for the page.
+- Presets (clean article, tables only, technical documentation, full page, offline archive, and custom ones), keyboard shortcuts (Alt+Shift+F, Alt+Shift+S, Alt+Shift+D), a right-click menu, and a settings page with the file name pattern, PDF header and footer with page numbers and a source QR code, the default preset, and a local export history.
+- Export several tabs: apply a preset to tabs of the current window and download a ZIP with a report or one combined PDF, with progress for each tab and the completed exports kept when some tabs fail.
+- `npm run test:browser` drives every feature in Chromium with the built extension and opens the downloaded files with independent readers.
+
+### Changed
+
+- The source is grouped by feature (`popup`, `content`, `selection`, `tables`, `document`, `formats`, `background`, `pages`, `shared`); release packaging uses the same ZIP code as the extension.
+- New permissions: `storage` (settings, presets, history), `contextMenus` (right-click menu), and `tabs` as an optional permission requested only by the batch export page.
+- Files built in the page are saved through the background service worker, so repeated exports from one page are not stopped by the browser's protection against multiple downloads.
+- The popup groups the actions by page, tables, tools and presets.
+- The table highlights and the selection tools share one overlay layer drawn in a closed shadow root.
+- The message for pages Web2Doc cannot access now names the unsupported pages and suggests reloading the page.
+- Typed file names that already end in the file's extension are no longer saved with a doubled extension.
+
+### Fixed
+
+- After a whole-page PDF capture, fixed and sticky elements no longer keep an empty `style` attribute; their original inline styles are restored exactly.
+- Web2Doc's own outlines and confirmation messages no longer appear in captures.
+- Production bundles are written as ASCII, so Chromium no longer rejects a script as not UTF-8 encoded; packaging now checks every script's encoding.
+
 ## [1.1.2] - 2026-11-05
 
 ### Added
