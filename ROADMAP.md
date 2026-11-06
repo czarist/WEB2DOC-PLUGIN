@@ -2,7 +2,7 @@
 
 Web2Doc saves pages, parts of pages and tables as PDF, PNG, Markdown, JSON, Word, Excel and CSV, with in-page editing tools, presets, batch export and local text recognition. Everything runs on the device. The feature stages below were planned together and are implemented on `dev`; the open items are the checks that still need real applications or a person at the browser.
 
-Last updated: 2026-11-05. This roadmap tracks the current `dev` branch, including work completed after the `v1.1.2` tag. Items are checked only when they are implemented and verified; "verified in Chromium" means `npm run test:browser` drove the feature in a real Chromium with the extension loaded and the resulting files were opened by independent readers (pypdf, openpyxl, python-docx, Pillow).
+Last updated: 2026-11-05. This roadmap tracks the current `dev` branch, including work completed after the `v2.1.2` tag. Items are checked only when they are implemented and verified; "verified in Chromium" means `npm run test:browser` drove the feature in a real Chromium with the extension loaded and the resulting files were opened by independent readers (pypdf, openpyxl, python-docx, Pillow).
 
 ## Foundations
 
@@ -68,8 +68,8 @@ Objective: verify the extension package and user-facing behavior before publishi
 - [ ] Test installation and export flows by hand in each supported Chromium-based browser (automated checks run in Chromium only).
 - [x] Review page access against actual extension behavior; remove unused permissions and unnecessary persistent host access.
 - [x] Clean build output and omit inline source maps from production bundles.
-- [x] Publish Git tags `v1.0.0`, `v1.0.1`, `v1.0.2`, and `v1.1.2`.
-- [x] Align package, lockfile, manifest, and README versions to `1.1.2` on `dev`.
+- [x] Publish Git tags `v1.0.0`, `v1.0.1`, `v1.0.2`, `v1.1.2`, and `v2.1.2`.
+- [x] Align package, lockfile, manifest, and README versions to `2.1.2` on `dev`.
 - [x] Document release packaging and versioning.
 - [x] Automate version consistency checks before creating future release tags.
 - [x] Produce an installable extension archive and verify its contents before publishing.

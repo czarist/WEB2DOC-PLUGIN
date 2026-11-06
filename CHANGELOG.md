@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.1.2] - 2026-11-05
+
 ### Added
 
 - Save part of a page. The popup's **Save part of the page** action opens tools on the page: an outline follows the pointer or the arrow keys, and a click or Enter chooses the section. Elements inside open shadow roots and whole frames can be chosen. Inside the selection, tools exclude, highlight, point an arrow at, comment on, redact, add a page break before, or move parts, with undo and restore all. Users set the title and file name, review the page with only what will be saved, and save it as PDF, PNG, Markdown, JSON or Word, send it to text recognition, or copy it as Markdown. Esc cancels at any time, and the page is restored after saving, going back, canceling, or a failed export.

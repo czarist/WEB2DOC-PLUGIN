@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v1.1.2"><img alt="Versão 1.1.2" src="https://img.shields.io/badge/vers%C3%A3o-1.1.2-111111?style=flat-square"></a>
+  <a href="https://github.com/czarist/WEB2DOC-PLUGIN/releases/tag/v2.1.2"><img alt="Versão 2.1.2" src="https://img.shields.io/badge/vers%C3%A3o-2.1.2-111111?style=flat-square"></a>
   <img alt="Node.js 26 LTS" src="https://img.shields.io/badge/Node.js-26_LTS-339933?style=flat-square&logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7.0-3178C6?style=flat-square&logo=typescript&logoColor=white">
   <img alt="Manifest V3" src="https://img.shields.io/badge/Extens%C3%A3o%20de%20navegador-Manifest%20V3-4285F4?style=flat-square">
