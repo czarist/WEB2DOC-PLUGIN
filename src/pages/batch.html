@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Export several tabs</title>
+    <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <img src="icons/icon-128.png" alt="" width="36" height="36">
+        <div>
+            <h1>Export several tabs</h1>
+            <p>Apply one preset to the tabs you choose and download the results together.</p>
+        </div>
+    </div>
+
+    <section id="permissionSection" aria-labelledby="permissionTitle" hidden>
+        <h2 id="permissionTitle">Allow Web2Doc to see your tabs</h2>
+        <p class="section-intro">To list the open tabs by title, Web2Doc needs permission to read tab titles and addresses. It is used only on this page and can be removed from the extension’s details at any time.</p>
+        <button class="primary" type="button" id="grantTabs">Allow</button>
+        <p class="status" id="permissionStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="setupSection" aria-labelledby="tabsTitle" hidden>
+        <h2 id="tabsTitle">Tabs in this window</h2>
+        <p class="section-intro">Browser pages and the extension store cannot be exported and are left out.</p>
+        <div class="row spaced-bottom">
+            <button class="text" type="button" id="selectAll">Select all</button>
+            <button class="text" type="button" id="selectNone">Clear</button>
+            <span class="help" id="selectionCount"></span>
+        </div>
+        <ul class="list" id="tabList"></ul>
+
+        <div class="row options-row">
+            <label class="field compact"><span>Preset</span><select id="batchPreset"></select></label>
+            <label class="field compact"><span>Result</span>
+                <select id="batchOutput">
+                    <option value="zip">One file per tab, in a ZIP</option>
+                    <option value="pdf">One combined PDF</option>
+                </select>
+            </label>
+            <button class="primary" type="button" id="startBatch">Export</button>
+        </div>
+        <p class="status" id="setupStatus" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="progressSection" aria-labelledby="progressTitle" hidden>
+        <h2 id="progressTitle" tabindex="-1">Progress</h2>
+        <progress id="batchProgress" max="1" value="0" aria-label="Tabs exported"></progress>
+        <p class="status" id="progressStatus" role="status" aria-live="polite"></p>
+        <ul class="list" id="resultList"></ul>
+        <div class="row spaced">
+            <button class="primary" type="button" id="downloadResult" disabled>Download</button>
+            <button class="secondary" type="button" id="restartBatch" hidden>Export other tabs</button>
+        </div>
+    </section>
+</main>
+<script src="batch.js"></script>
+</body>
+</html>

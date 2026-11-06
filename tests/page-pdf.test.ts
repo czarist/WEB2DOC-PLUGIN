@@ -8,8 +8,8 @@ import {
   pdfFileName,
   pdfScale,
   type PDFBrowserApi
-} from "../src/services/PagePDFService.ts";
-import { exportActiveTab } from "../src/services/TabExportService.ts";
+} from "../src/background/PageCaptureService.ts";
+import { exportActiveTab } from "../src/popup/TabExportService.ts";
 
 interface Call { method: string; params?: object }
 
@@ -56,7 +56,7 @@ function fakeBrowser(options: {
 
 test("captures the page with screen styles and downloads a named PDF", async () => {
   const fake = fakeBrowser();
-  const result = await PagePDFService.savePageAsPDF(7, fake.browser);
+  const result = await PagePDFService.savePageAsPDF(7, { browser: fake.browser });
 
   assert.deepEqual(result, { success: true, message: "PDF download started." });
   assert.deepEqual(fake.calls.map((call) => call.method), [
@@ -79,18 +79,18 @@ test("captures the page with screen styles and downloads a named PDF", async () 
 
 test("reports restricted pages and open DevTools without capturing", async () => {
   const restricted = fakeBrowser({ attachError: new Error("Cannot access a chrome:// URL") });
-  assert.match((await PagePDFService.savePageAsPDF(7, restricted.browser)).message, /can't be captured/);
+  assert.match((await PagePDFService.savePageAsPDF(7, { browser: restricted.browser })).message, /can't be captured/);
   assert.equal(restricted.calls.length, 0);
   assert.equal(restricted.detached(), 0);
 
   const devtools = fakeBrowser({ attachError: new Error("Another debugger is already attached to the tab with id: 7.") });
-  assert.match((await PagePDFService.savePageAsPDF(7, devtools.browser)).message, /Close DevTools/);
+  assert.match((await PagePDFService.savePageAsPDF(7, { browser: devtools.browser })).message, /Close DevTools/);
 });
 
 test("restores the page and detaches when capture fails", async () => {
   for (const options of [{ printError: new Error("Printing failed") }, { pdf: "" }, { prepared: null }]) {
     const fake = fakeBrowser(options);
-    const result = await PagePDFService.savePageAsPDF(7, fake.browser);
+    const result = await PagePDFService.savePageAsPDF(7, { browser: fake.browser });
     assert.equal(result.success, false);
     assert.match(result.message, /PDF capture failed/);
     assert.equal(fake.detached(), 1);
@@ -99,7 +99,7 @@ test("restores the page and detaches when capture fails", async () => {
   }
 
   const blocked = fakeBrowser({ downloadError: new Error("Download blocked") });
-  assert.match((await PagePDFService.savePageAsPDF(7, blocked.browser)).message, /download could not start/);
+  assert.match((await PagePDFService.savePageAsPDF(7, { browser: blocked.browser })).message, /download could not start/);
   assert.equal(blocked.detached(), 1);
 });
 
@@ -127,5 +127,5 @@ test("the popup sends PDF requests to the background service worker", async (t) 
   browser.runtime.sendMessage = async () => null;
   assert.match((await exportActiveTab("exportPDF")).message, /invalid response/);
   browser.runtime.sendMessage = async () => { throw new Error("No service worker"); };
-  assert.match((await exportActiveTab("exportPDF")).message, /could not start the PDF capture/);
+  assert.match((await exportActiveTab("exportPDF")).message, /could not start the capture/);
 });

@@ -3,7 +3,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { archiveName, EXPECTED_FILES, verifyPackageEntries } from "./release/package.ts";
-import { createZip, readZip } from "./release/zip.ts";
+import { deflateRawSync, inflateRawSync } from "node:zlib";
+import { createZip, readZip } from "../src/formats/zip.ts";
 
 const root = path.resolve(import.meta.dirname, "..");
 const dist = path.join(root, "dist");
@@ -24,12 +25,12 @@ const entries = EXPECTED_FILES.map((name) => {
   return { name, data: readFileSync(file) };
 });
 
-const archive = createZip(entries);
-const readBack = readZip(archive);
+const archive = createZip(entries, { deflate: (data) => deflateRawSync(data, { level: 9 }) });
+const readBack = readZip(archive, { inflate: (data) => inflateRawSync(data) });
 const problems = verifyPackageEntries(readBack, version);
 for (const original of entries) {
   const copy = readBack.find((entry) => entry.name === original.name);
-  if (copy && !copy.data.equals(original.data)) problems.push(`${original.name}: archived content differs from dist/.`);
+  if (copy && !Buffer.from(copy.data).equals(original.data)) problems.push(`${original.name}: archived content differs from dist/.`);
 }
 if (problems.length > 0) fail(problems);
 

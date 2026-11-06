@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Web2Doc</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface-hover: #f2f4f7;
+            --surface-active: #e8ebf0;
+            --text: #16181d;
+            --text-muted: #5b6270;
+            --border: #e3e6eb;
+            --accent: #1f5bd8;
+            --accent-soft: #e8effc;
+            --success: #17794a;
+            --success-soft: #e6f4ec;
+            --error: #b42318;
+            --error-soft: #fdecea;
+            --focus: #1f5bd8;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1d1f24;
+                --surface-hover: #282b31;
+                --surface-active: #30343b;
+                --text: #eceef2;
+                --text-muted: #a3a9b5;
+                --border: #33363d;
+                --accent: #8cb0ff;
+                --accent-soft: #263552;
+                --success: #6fd69c;
+                --success-soft: #1d3a2b;
+                --error: #ff9c90;
+                --error-soft: #48231f;
+                --focus: #8cb0ff;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        ::selection { background: var(--accent-soft); color: var(--text); }
+        [hidden] { display: none !important; }
+
+        body {
+            width: 340px;
+            margin: 0;
+            padding: 14px 12px 12px;
+            background: var(--bg);
+            color: var(--text);
+            font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 4px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header img { width: 28px; height: 28px; flex: none; }
+        h1 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -0.01em; }
+        header p { margin: 1px 0 0; color: var(--text-muted); font-size: 12px; }
+
+        .group { padding: 6px 0 2px; }
+        .group + .group { border-top: 1px solid var(--border); }
+        .group h2 {
+            margin: 2px 8px 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .actions { display: grid; gap: 1px; }
+
+        .action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 6px 8px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 120ms ease-out;
+        }
+
+        .action:hover:not(:disabled), .chip:hover:not(:disabled), .tool:hover:not(:disabled) { background: var(--surface-hover); }
+        .action:active:not(:disabled), .chip:active:not(:disabled), .tool:active:not(:disabled) { background: var(--surface-active); }
+
+        .action:focus-visible, .chip:focus-visible, .tool:focus-visible, select:focus-visible, .link:focus-visible {
+            outline: 2px solid var(--focus);
+            outline-offset: -2px;
+        }
+
+        .action:disabled, .chip:disabled, .tool:disabled { cursor: progress; opacity: 0.55; }
+
+        .action-icon {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            flex: none;
+            border-radius: 8px;
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .action-icon svg, .tool svg { width: 18px; height: 18px; }
+        .action-title { display: block; font-weight: 600; }
+        .action-detail { display: block; margin-top: 1px; color: var(--text-muted); font-size: 12px; }
+
+        .formats {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px 6px;
+        }
+
+        .formats span { color: var(--text-muted); font-size: 12px; margin-right: 4px; }
+
+        .chip {
+            height: 26px;
+            padding: 0 8px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+        .tool {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            padding: 5px 8px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .tool svg { flex: none; color: var(--accent); }
+
+        .preset-row { display: flex; gap: 6px; padding: 2px 8px 4px; }
+
+        select {
+            flex: 1;
+            min-width: 0;
+            height: 30px;
+            padding: 0 8px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font: inherit;
+        }
+
+        .footer-links { display: flex; justify-content: space-between; gap: 8px; padding: 8px 8px 0; border-top: 1px solid var(--border); }
+
+        .link {
+            padding: 4px 2px;
+            border: 0;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--accent);
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+        .status {
+            margin: 8px 0 0;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--surface-hover);
+        }
+
+        .status:empty { display: none; }
+        .status[data-state="success"] { color: var(--success); background: var(--success-soft); }
+        .status[data-state="error"] { color: var(--error); background: var(--error-soft); }
+
+        .picker-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 0 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .view-title { outline: none; margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -0.01em; }
+        .picker-header p { margin: 1px 0 0; color: var(--text-muted); font-size: 12px; }
+
+        .icon-button {
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            flex: none;
+            padding: 0;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .icon-button svg { width: 18px; height: 18px; }
+        .icon-button:hover { background: var(--surface-hover); }
+
+        .table-list {
+            max-height: 300px;
+            margin: 0;
+            padding: 6px 0;
+            overflow-y: auto;
+            list-style: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .table-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 120ms ease-out;
+        }
+
+        .table-item:hover, .table-item:focus-within { background: var(--surface-hover); }
+
+        .table-item input, .option input {
+            width: 16px;
+            height: 16px;
+            margin: 2px 0 0;
+            flex: none;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .table-item input:focus-visible, .option input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+        .table-number {
+            display: grid;
+            place-items: center;
+            min-width: 22px;
+            height: 20px;
+            padding: 0 5px;
+            flex: none;
+            border: 1.5px solid var(--accent);
+            border-radius: 10px;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 650;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .table-item:has(input:checked) .table-number { background: var(--accent); color: var(--bg); }
+        .table-text { min-width: 0; }
+        .table-title { display: block; font-weight: 600; overflow-wrap: anywhere; }
+        .table-meta, .table-preview { display: block; margin-top: 1px; color: var(--text-muted); font-size: 12px; }
+        .table-meta { font-variant-numeric: tabular-nums; }
+        .table-preview { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+        .table-options { display: grid; gap: 6px; padding: 10px 0 2px; border-top: 1px solid var(--border); }
+        .segmented { display: flex; gap: 2px; padding: 3px; border-radius: 9px; background: var(--surface-hover); }
+        .segmented label { flex: 1; }
+        .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+        .segmented span {
+            display: block;
+            padding: 5px 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .segmented input:checked + span { background: var(--bg); color: var(--accent); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18); }
+        .segmented input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 1px; }
+        .option { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; }
+
+        .picker-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
+        }
+
+        .text-button, .primary-button {
+            height: 32px;
+            padding: 0 12px;
+            border: 0;
+            border-radius: 8px;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .text-button { background: transparent; color: var(--accent); }
+        .text-button:hover { background: var(--accent-soft); }
+        .primary-button { background: var(--accent); color: var(--bg); }
+        .primary-button:hover:not(:disabled) { filter: brightness(1.08); }
+        .primary-button:disabled { background: var(--surface-active); color: var(--text-muted); cursor: default; }
+
+        .text-button:focus-visible, .primary-button:focus-visible, .icon-button:focus-visible {
+            outline: 2px solid var(--focus);
+            outline-offset: 2px;
+        }
+
+        .qr { display: grid; justify-items: center; gap: 10px; padding: 14px 0 4px; }
+        .qr-code { width: 200px; height: 200px; padding: 8px; border-radius: 8px; background: #ffffff; }
+        .qr-code svg { width: 100%; height: 100%; display: block; }
+        .qr-url { max-width: 100%; color: var(--text-muted); font-size: 12px; overflow-wrap: anywhere; text-align: center; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .action, .table-item, .chip, .tool { transition: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <section id="mainView">
+        <header>
+            <img src="icons/icon-128.png" alt="" width="28" height="28">
+            <div>
+                <h1>Web2Doc</h1>
+                <p>Save this page's content as a file.</p>
+            </div>
+        </header>
+
+        <div class="group" aria-labelledby="pageGroup">
+            <h2 id="pageGroup">This page</h2>
+            <div class="actions">
+                <button class="action" id="exportPDF" type="button">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 8.5V3.5h10v5"/><rect x="3.5" y="8.5" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>
+                        </svg>
+                    </span>
+                    <span>
+                        <span class="action-title">Save page as PDF</span>
+                        <span class="action-detail">The full page with styles and links</span>
+                    </span>
+                </button>
+
+                <button class="action" id="selectPDF" type="button">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4.5 8V5.5a1 1 0 0 1 1-1H8M16 4.5h2.5a1 1 0 0 1 1 1V8M19.5 16v2.5a1 1 0 0 1-1 1H16M8 19.5H5.5a1 1 0 0 1-1-1V16"/>
+                            <path d="M9.5 9.5l3.2 8 1.2-3.3 3.3-1.2z"/>
+                        </svg>
+                    </span>
+                    <span>
+                        <span class="action-title">Save part of the page</span>
+                        <span class="action-detail">Pick a section, edit it, then save it</span>
+                    </span>
+                </button>
+
+                <button class="action" id="selectArea" type="button">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4.5" y="6.5" width="15" height="11" rx="1" stroke-dasharray="3 2.5"/><path d="M19.5 17.5l-3-3"/>
+                        </svg>
+                    </span>
+                    <span>
+                        <span class="action-title">Save an area</span>
+                        <span class="action-detail">Draw a rectangle, save as image or PDF</span>
+                    </span>
+                </button>
+            </div>
+            <div class="formats" role="group" aria-label="Save the main content as Markdown, JSON or Word, or copy it">
+                <span>Content</span>
+                <button class="chip" type="button" data-document="markdown">Markdown</button>
+                <button class="chip" type="button" data-document="json">JSON</button>
+                <button class="chip" type="button" data-document="docx">Word</button>
+                <button class="chip" type="button" id="copyMarkdown" aria-label="Copy the main content as Markdown" title="Copy the main content as Markdown">Copy</button>
+            </div>
+        </div>
+
+        <div class="group" aria-labelledby="tablesGroup">
+            <h2 id="tablesGroup">Tables</h2>
+            <div class="actions">
+                <button class="action" id="exportCSV" type="button">
+                    <span class="action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10"/>
+                        </svg>
+                    </span>
+                    <span>
+                        <span class="action-title">Export tables</span>
+                        <span class="action-detail">Choose tables, then save as Excel or CSV</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div class="group" aria-labelledby="toolsGroup">
+            <h2 id="toolsGroup">Tools</h2>
+            <div class="tools">
+                <button class="tool" type="button" data-tab-action="saveArchive">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7.5h15v12h-15z"/><path d="M3.5 4.5h17v3h-17zM10 11.5h4"/></svg>
+                    Offline archive
+                </button>
+                <button class="tool" type="button" data-tab-action="exportImages">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M20.5 15.5l-5-5-9 8.5"/></svg>
+                    Page images
+                </button>
+                <button class="tool" type="button" id="exportInventory">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>
+                    Links and metadata
+                </button>
+                <button class="tool" type="button" data-tab-action="ocrVisible">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>
+                    Text from screen
+                </button>
+                <button class="tool" type="button" data-tab-action="compareCapture">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="7" height="15" rx="1.5"/><rect x="13.5" y="4.5" width="7" height="15" rx="1.5"/><path d="M6 9h2M16 9h2M16 12h2"/></svg>
+                    Compare captures
+                </button>
+                <button class="tool" type="button" id="showQr">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM18 14h2M14 18v2"/></svg>
+                    Page QR code
+                </button>
+            </div>
+        </div>
+
+        <div class="group" aria-labelledby="presetsGroup">
+            <h2 id="presetsGroup"><label for="presetSelect">Preset</label></h2>
+            <div class="preset-row">
+                <select id="presetSelect"></select>
+                <button class="chip" type="button" id="runPreset">Run</button>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <button class="link" type="button" id="openBatch">Export several tabs…</button>
+            <button class="link" type="button" id="openOptions">Settings and history</button>
+        </div>
+    </section>
+
+    <section id="tablesView" class="picker" hidden aria-labelledby="pickerTitle">
+        <div class="picker-header">
+            <button class="icon-button" id="pickerBack" type="button" aria-label="Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <div>
+                <h2 class="view-title" id="pickerTitle" tabindex="-1">Choose tables</h2>
+                <p id="pickerSummary"></p>
+            </div>
+        </div>
+
+        <ul class="table-list" id="tableList"></ul>
+
+        <div class="table-options">
+            <div class="segmented" role="radiogroup" aria-label="File format">
+                <label><input type="radio" name="tableFormat" value="xlsx" checked><span>Excel (.xlsx)</span></label>
+                <label><input type="radio" name="tableFormat" value="csv"><span>CSV</span></label>
+            </div>
+            <label class="option" id="convertOption">
+                <input type="checkbox" id="convertValues" checked>
+                <span>Convert numbers, dates, and currencies when the page language makes them clear. Codes with leading zeros stay as text.</span>
+            </label>
+        </div>
+
+        <div class="picker-footer">
+            <button class="text-button" id="toggleAllTables" type="button">Select all</button>
+            <button class="primary-button" id="exportSelectedTables" type="button" disabled>Select tables</button>
+        </div>
+    </section>
+
+    <section id="qrView" hidden aria-labelledby="qrTitle">
+        <div class="picker-header">
+            <button class="icon-button" id="qrBack" type="button" aria-label="Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <div>
+                <h2 class="view-title" id="qrTitle" tabindex="-1">QR code for this page</h2>
+                <p>Scan it to open the page on another device.</p>
+            </div>
+        </div>
+        <div class="qr">
+            <div class="qr-code" id="qrCode" role="img" aria-label="QR code linking to this page"></div>
+            <p class="qr-url" id="qrUrl" translate="no"></p>
+            <button class="primary-button" type="button" id="downloadQr">Download SVG</button>
+        </div>
+    </section>
+
+    <p class="status" id="exportStatus" role="status" aria-live="polite"></p>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

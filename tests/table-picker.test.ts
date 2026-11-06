@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { stubGlobal } from "./helpers.ts";
-import { ExportController } from "../src/controllers/ExportController.ts";
-import { CSVService } from "../src/services/CSVService.ts";
-import { findTables, readTable, summarizeTable } from "../src/services/TableService.ts";
-import { describeTable, exportButtonLabel } from "../src/TablePicker.ts";
-import { isTableHighlightMessage, isTableListResult } from "../src/types/ExportResult.ts";
+import { ContentRouter } from "../src/content/ContentRouter.ts";
+import { readZip } from "../src/formats/zip.ts";
+import { findTables, readTable, summarizeTable } from "../src/tables/TableService.ts";
+import { describeTable, exportButtonLabel } from "../src/popup/TablePicker.ts";
+import { isTableHighlightMessage, isTableListResult } from "../src/shared/messages.ts";
 
 // Minimal element doubles: tables expose rows/cells/caption, headings expose text.
 function heading(text: string) {
@@ -60,34 +60,65 @@ test("truncates long titles and previews", () => {
   assert.ok(summary.preview.length <= 90 && summary.preview.endsWith("…"));
 });
 
-test("lists tables and exports only the chosen ones", (t) => {
-  const first = table([["a", "b"]]);
-  const second = table([["c"]]);
-  stubGlobal(t, "document", page(heading("Data"), first, second));
-  const exported: unknown[] = [];
-  // Replace the download with a recorder; CSV formatting and downloads have their own tests.
-  t.mock.method(CSVService, "exportTablesToCSV", (tables: unknown) => {
-    exported.push(tables);
-    return { success: true, message: "ok" };
-  });
+const hooks = { startSelection: () => ({ success: true as const, message: "" }) };
 
-  const list = ExportController.handleExport({ action: "listTables" });
+/** A page double that records downloads made through a temporary link. */
+function downloadingPage(t: import("node:test").TestContext, ...elements: unknown[]) {
+  const downloads: Array<{ name: string; blob: Blob }> = [];
+  let blob: Blob | undefined;
+  t.mock.method(URL, "createObjectURL", (value: Blob) => { blob = value; return "blob:test"; });
+  t.mock.method(URL, "revokeObjectURL", () => undefined);
+  const anchor = { href: "", download: "", click() { if (blob) downloads.push({ name: anchor.download, blob }); }, remove() {} };
+  stubGlobal(t, "document", {
+    ...page(...elements),
+    title: "Population data",
+    documentElement: { lang: "en-US" },
+    body: { appendChild() {} },
+    createElement: () => anchor
+  });
+  stubGlobal(t, "window", { setTimeout: () => 0 });
+  stubGlobal(t, "location", { href: "https://data.example/population", hostname: "data.example" });
+  return downloads;
+}
+
+test("lists tables and exports only the chosen ones as CSV or Excel", async (t) => {
+  const first = table([["a", "b"]]);
+  const second = table([["Country", "Population"], ["Chad", "0019"], ["Peru", "1,234,567"]], { caption: "People" });
+  const downloads = downloadingPage(t, heading("Data"), first, second);
+
+  const list = await ContentRouter.handle({ action: "listTables" }, hooks);
   assert.equal(isTableListResult(list), true);
   assert.equal(list.message, "2 tables found.");
 
-  assert.deepEqual(ExportController.handleExport({ action: "exportCSV", tables: [1] }), { success: true, message: "ok" });
-  assert.deepEqual(exported, [[second]]);
+  assert.deepEqual(await ContentRouter.handle({ action: "exportTables", format: "csv", tables: [1] }, hooks),
+    { success: true, message: "CSV download started for 1 table." });
+  assert.equal(downloads[0]?.name, "Population data - tables.csv");
+  const csvBytes = new Uint8Array(await (downloads[0]?.blob as Blob).arrayBuffer());
+  assert.deepEqual([...csvBytes.slice(0, 3)], [0xef, 0xbb, 0xbf], "the CSV starts with a UTF-8 byte order mark");
+  assert.equal(new TextDecoder().decode(csvBytes.slice(3)), '"Country","Population"\r\n"Chad","0019"\r\n"Peru","1,234,567"');
 
-  assert.match(ExportController.handleExport({ action: "exportCSV", tables: [] }).message, /Select at least one/);
-  assert.match(ExportController.handleExport({ action: "exportCSV", tables: ["1"] }).message, /Select at least one/);
-  assert.match(ExportController.handleExport({ action: "exportCSV", tables: [5] }).message, /page changed/);
+  // The popup's older CSV action keeps working.
+  assert.equal((await ContentRouter.handle({ action: "exportCSV", tables: [0] }, hooks)).success, true);
+
+  const excel = await ContentRouter.handle({ action: "exportTables", format: "xlsx", tables: [0, 1], convertValues: true }, hooks);
+  assert.deepEqual(excel, { success: true, message: "Excel download started for 2 tables." });
+  const workbook = readZip(new Uint8Array(await (downloads.at(-1)?.blob as Blob).arrayBuffer()));
+  const xml = (name: string) => new TextDecoder().decode(workbook.find((entry) => entry.name === name)?.data);
+  assert.match(xml("xl/workbook.xml"), /<sheet name="Data" sheetId="1"[^>]*\/><sheet name="People"/);
+  assert.match(xml("xl/worksheets/sheet2.xml"), /<t xml:space="preserve">0019<\/t>/, "leading zeros stay text");
+  assert.match(xml("xl/worksheets/sheet2.xml"), /<c r="B3"><v>1234567<\/v><\/c>/, "English numbers are converted");
+
+  assert.match((await ContentRouter.handle({ action: "exportTables", format: "csv", tables: [] }, hooks)).message, /Select at least one/);
+  assert.match((await ContentRouter.handle({ action: "exportTables", format: "csv", tables: ["1"] }, hooks)).message, /Select at least one/);
+  assert.match((await ContentRouter.handle({ action: "exportTables", format: "csv", tables: [5] }, hooks)).message, /page changed/);
   second.isConnected = false;
-  assert.match(ExportController.handleExport({ action: "exportCSV", tables: [1] }).message, /page changed/);
+  assert.match((await ContentRouter.handle({ action: "exportTables", format: "csv", tables: [1] }, hooks)).message, /page changed/);
+  assert.deepEqual(await ContentRouter.handle({ action: "exportPDF" }, hooks), { success: false, message: "Unsupported export action." });
 });
 
-test("reports pages without tables", (t) => {
+test("reports pages without tables", async (t) => {
   stubGlobal(t, "document", page(heading("Nothing here")));
-  assert.deepEqual(ExportController.handleExport({ action: "listTables" }), {
+  assert.deepEqual(await ContentRouter.handle({ action: "listTables" }, hooks), {
     success: false,
     message: "No HTML tables were found on this page."
   });

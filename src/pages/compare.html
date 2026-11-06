@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compare captures</title>
+    <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main>
+    <div class="page-header">
+        <img src="icons/icon-128.png" alt="" width="36" height="36">
+        <div>
+            <h1>Compare captures</h1>
+            <p id="compareSource">Changes in the page’s main content between two captures.</p>
+        </div>
+    </div>
+
+    <section aria-labelledby="summaryTitle">
+        <h2 id="summaryTitle">Summary</h2>
+        <table class="compare-meta">
+            <thead><tr><th scope="col"><span class="visually-hidden">Capture</span></th><th scope="col">Captured</th><th scope="col">Title</th></tr></thead>
+            <tbody>
+                <tr><th scope="row">Before</th><td class="numeric" id="beforeDate"></td><td id="beforeTitle"></td></tr>
+                <tr><th scope="row">After</th><td class="numeric" id="afterDate"></td><td id="afterTitle"></td></tr>
+            </tbody>
+        </table>
+        <p class="status" id="compareStats" role="status"></p>
+        <div class="row">
+            <label class="check compact-check"><input type="checkbox" id="onlyChanges" checked><span>Show only changed lines and their surroundings</span></label>
+            <button class="secondary" type="button" id="downloadDiff">Download as text</button>
+        </div>
+    </section>
+
+    <section aria-labelledby="changesTitle">
+        <h2 id="changesTitle">Changes</h2>
+        <ol class="diff" id="diff"></ol>
+        <p class="empty" id="compareEmpty" hidden>There is nothing to compare. Use “Compare captures” in the popup twice on the same page.</p>
+    </section>
+</main>
+<script src="compare.js"></script>
+</body>
+</html>

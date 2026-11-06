@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/czarist/WEB2DOC-PLUGIN/main/schemas/web2doc-document-v1.schema.json",
+  "title": "Web2Doc page document, version 1",
+  "description": "The structure Web2Doc exports as JSON: the page title, address, capture date and its content as blocks.",
+  "type": "object",
+  "required": ["$schema", "schemaVersion", "title", "url", "capturedAt", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "schemaVersion": { "const": 1 },
+    "title": { "type": "string" },
+    "url": { "type": "string" },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "language": { "type": "string", "description": "The page's declared language, such as pt-BR." },
+    "blocks": { "$ref": "#/$defs/blocks" }
+  },
+  "$defs": {
+    "blocks": { "type": "array", "items": { "$ref": "#/$defs/block" } },
+    "inlines": { "type": "array", "items": { "$ref": "#/$defs/inline" } },
+    "mark": { "enum": ["bold", "italic", "code", "highlight", "strike"] },
+    "inline": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "text" },
+            "text": { "type": "string" },
+            "marks": { "type": "array", "items": { "$ref": "#/$defs/mark" } }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "href", "children"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "link" },
+            "href": { "type": "string" },
+            "children": { "$ref": "#/$defs/inlines" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "src", "alt"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "image" },
+            "src": { "type": "string" },
+            "alt": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "const": "break" } }
+        }
+      ]
+    },
+    "cell": {
+      "type": "object",
+      "required": ["header", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "header": { "type": "boolean" },
+        "content": { "$ref": "#/$defs/inlines" }
+      }
+    },
+    "block": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "level", "content"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "heading" },
+            "level": { "enum": [1, 2, 3, 4, 5, 6] },
+            "content": { "$ref": "#/$defs/inlines" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "content"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "paragraph" },
+            "content": { "$ref": "#/$defs/inlines" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "ordered", "items"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "list" },
+            "ordered": { "type": "boolean" },
+            "start": { "type": "integer" },
+            "items": { "type": "array", "items": { "$ref": "#/$defs/blocks" } }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "rows"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "table" },
+            "rows": { "type": "array", "items": { "type": "array", "items": { "$ref": "#/$defs/cell" } } }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "code" },
+            "language": { "type": "string" },
+            "text": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "blocks"],
+          "additionalProperties": false,
+          "properties": {
+            "type": { "const": "quote" },
+            "blocks": { "$ref": "#/$defs/blocks" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "additionalProperties": false,
+          "description": "A comment the user added to the selection.",
+          "properties": {
+            "type": { "const": "note" },
+            "text": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "additionalProperties": false,
+          "properties": { "type": { "enum": ["rule", "pageBreak"] } }
+        }
+      ]
+    }
+  }
+}
